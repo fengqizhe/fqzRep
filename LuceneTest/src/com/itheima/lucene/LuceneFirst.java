@@ -32,7 +32,7 @@ public class LuceneFirst {
 @SuppressWarnings("resource")
 @Test
 public void createIndex() throws Exception{
-	//创建字典 指定索引库保存位置
+	//创建字典 指定索引库保存位置aa
 	Directory directory = FSDirectory.open(new File("D:/logs"));
 	//创建解析器
 	Analyzer analyzer =new IKAnalyzer(); 
