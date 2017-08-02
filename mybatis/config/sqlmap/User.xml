@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，目前的作用就是sql语句隔离。将来还有重要应用 -->
+<mapper namespace="user">
+
+	<!-- 查询时使用select节点，id：起名叫做StatementID -->
+	<!-- #{}叫做占位符，相当于jdbc中的?,如果是参数是简单数据类型（int、string等），括号中的名称可以随便写 -->
+	<!-- parameterType:指定参数类型, resultType:返回值类型 -->
+	<select id="getUserById" parameterType="int" resultType="com.itheima.mybatis.pojo.User">
+		
+		SELECT * from user WHERE id=#{id}
+	</select>
+	<!-- 根据用户名模糊查询用户列表，resultType：还是列表中的元素的类型 -->
+	<select id="getUserByName" parameterType="int" resultType="com.itheima.mybatis.pojo.User">
+		<!-- SELECT * FROM `user` WHERE username LIKE #{username}; -->
+		<!-- ${}:字符串拼接指令，如果参数是简单数据类型括号中的名称必须是“value” -->
+		SELECT * FROM `user` WHERE username LIKE '%${value}%';
+	</select>
+	<!-- 插入用户数据 -->
+	<insert id="addUser" parameterType="com.itheima.mybatis.pojo.User">
+		<!-- 主键返回 -->
+		<!-- keyProperty:指定将主键设置到pojo类的主键属性 
+			resultType:主键的数据类型
+			order：语句的执行时机，BEFORE：在插入之前执行 AFTER：插入之后执行
+					如果主键使用uui的话应该是BEFORE
+		-->
+		<selectKey keyProperty="id" resultType="int" order="AFTER">
+			SELECT LAST_INSERT_ID();
+		</selectKey>
+		INSERT into `user`(username,birthday,sex,address) 
+		VALUES(#{username}, #{birthday}, #{sex}, #{address})
+	</insert>
+	<!-- 更新用户信息 -->
+	<update id="updateUserName" parameterType="map">
+		<!-- 如果参数是map， 占位符中的名称必须是map的key -->
+		update user set username=#{username} where username=#{uname}
+	</update>
+	<update id="updateUserById" parameterType="com.itheima.mybatis.pojo.User">
+		update user set username=#{username}, 
+					birthday=#{birthday}, sex=#{sex}, address=#{address}
+		where id=#{id}
+	</update>
+	<!-- 删除用户信息 -->
+	<delete id="deleteUserById" parameterType="int">
+		delete from user where id=#{id}
+	</delete>
+	
+</mapper>
